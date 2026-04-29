@@ -1,166 +1,194 @@
 <?php
-$conn = mysqli_connect("localhost", "root","","data_pengguna");
+$conn = mysqli_connect("localhost", "root", "", "data_pengguna");
 if (!$conn) {
-    die("koneksi gagal: " . mysqli_connect_error());
+    die("Koneksi gagal: " . mysqli_connect_error());
 }
-
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pengguna</title>
     <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #ecdddd;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
-    margin: 0;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+        h1 {
+            font-size: 3rem;
+            color: #4a4a4a;
+            background-color: #fcf8e3;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+        }
 
-h1 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
+        .invitation-text {
+            font-size: 1.5rem;
+            color: #6c757d;
+            margin: 20px 0;
+            font-style: italic;
+            text-transform: uppercase;
+        }
 
-/* Style untuk tombol "+Tambah Data" */
-body > a:first-of-type {
-    display: inline-block;
-    background-color: #10b981; /* Warna hijau modern */
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-}
+        a {
+            text-decoration: none;
+            color: #0056b3;
+            background-color: #7bb5f2; 
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-body > a:first-of-type:hover {
-    background-color: #059669;
-    transform: translateY(-2px);
-}
+        a:hover {
+            background-color: #0056b3; 
+            color: #fff;
+        }
 
-/* Style untuk Tabel */
-table {
-    width: 100%;
-    max-width: 900px;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    overflow: hidden; /* Agar border-radius pada tabel berfungsi */
-}
+        /* Style for Table */
+        table {
+            width: 100%;
+            max-width: 900px;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px auto;
+        }
 
-/* Mengabaikan atribut border="1" bawaan dari HTML */
-table, th, td {
-    border: none;
-}
+        table, th, td {
+            border: 1px solid #ddd;
+        }
 
-th, td {
-    padding: 16px 20px;
-    text-align: left;
-}
+        th, td {
+            padding: 12px 20px;
+            text-align: center;
+        }
 
-th {
-    background-color: #1e293b;
-    color: #f8fafc;
-    font-weight: 600;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
+        th {
+            background-color: #f39c12;
+            color: white;
+            font-size: 1.2rem;
+        }
 
-tr {
-    border-bottom: 1px solid #e2e8f0;
-    transition: background-color 0.2s ease;
-}
+        tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
 
-tr:last-child {
-    border-bottom: none;
-}
+        tr:last-child {
+            border-bottom: none;
+        }
 
-tr:hover {
-    background-color: #f1f5f9;
-}
+        tr:hover {
+            background-color: #f1f5f9;
+        }
 
-/* Kolom Aksi */
-.actions {
-    display: flex;
-    gap: 8px;
-}
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+        }
 
-/* Tombol Edit dan Hapus */
-.edit-btn, .delete-btn {
-    padding: 8px 14px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 0.85em;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
+        .edit-btn, .delete-btn, .add-btn {
+            padding: 8px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
 
-.edit-btn {
-    background-color: #e0f2fe;
-    color: #0284c7;
-}
+        .edit-btn {
+            background-color: #e0f2fe;
+            color: #0284c7;
+        }
 
-.edit-btn:hover {
-    background-color: #0284c7;
-    color: white;
-}
+        .edit-btn:hover {
+            background-color: #0284c7;
+            color: white;
+        }
 
-.delete-btn {
-    background-color: #fee2e2;
-    color: #dc2626;
-}
+        .delete-btn {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
 
-.delete-btn:hover {
-    background-color: #dc2626;
-    color: white;
-}
+        .delete-btn:hover {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .add-btn {
+            background-color: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px; 
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px; 
+        }
+
+        .add-btn:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        td a:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
     <h1>Data Pengguna</h1>
-    <a href="tambahpengguna.php">+Tambah Data</a><br>
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Id</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>aksi</th>
-        </tr>
 
-    <?php
-        $data = mysqli_query($conn, "SELECT * FROM pengguna");
-        while($item = mysqli_fetch_array($data)) {
-    ?>
-    <tr>
-        <td><?= $item['id']; ?></td>
-        <td><?= $item['nama']; ?></td>
-        <td><?= $item['email']; ?></td>
-        <td><?= $item['password']; ?></td>
+    <div class="invitation-text">
+        <p>Selamat datang di halaman pengelolaan data pengguna. Anda dapat menambah, mengedit, atau menghapus data pengguna sesuai kebutuhan.</p>
+    </div>
+    <a href="tambahpengguna.php" class="add-btn">+Tambah Data Pengguna</a>
+       
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $data = mysqli_query($conn, "SELECT * FROM pengguna");
+                while($item = mysqli_fetch_array($data)) {
+            ?>
+            <tr>
+                <td><?= $item['id']; ?></td>
+                <td><?= $item['nama']; ?></td>
+                <td><?= $item['email']; ?></td>
+                <td><?= $item['password']; ?></td>
 
-        <td class="actions">
-             <a href="ubahpengguna.php?id=<?= $item['id']; ?>" class="edit-btn">Edit</a>
-            <a href="hapuspengguna.php?id=<?= $item['id']; ?>" class="delete-btn">Hapus</a>
-        </td>
-    </tr>
-    <?php
-          }
-        ?>
-      </table>
+                <td class="actions">
+                    <a href="ubahpengguna.php?id=<?= $item['id']; ?>" class="edit-btn">Edit</a>
+                    <a href="hapuspengguna.php?id=<?= $item['id']; ?>" class="delete-btn">Hapus</a>
+                </td>
+            </tr>
+            <?php
+                }
+            ?>
+        </tbody>
+    </table>
 
 </body>
 </html>
